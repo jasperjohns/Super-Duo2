@@ -107,11 +107,22 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String desc = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC));
         ((TextView) rootView.findViewById(R.id.fullBookDesc)).setText(desc);
 
-        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
+//        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
+        String authors = null;
+        String[] authorsArr;
+        try {
+            authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
+            authorsArr = authors.split(",");
+        }
+        catch (Exception ex){
+            authors="";
+            authorsArr = authors.split(",");
+        }
+
         ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
         ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",","\n"));
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
             new DownloadImage((ImageView) rootView.findViewById(R.id.fullBookCover)).execute(imgUrl);
             rootView.findViewById(R.id.fullBookCover).setVisibility(View.VISIBLE);
